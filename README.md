@@ -1,4 +1,4 @@
-# MarkLogic DiTAA Step
+# XML Calabash DiTAA Step
 
 This repository contains an [XML Calabash 1.0](http://github.com/ndw/xmlcalabash1)
 extension steps that supports
