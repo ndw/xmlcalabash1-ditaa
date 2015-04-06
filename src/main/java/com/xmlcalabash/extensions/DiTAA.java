@@ -14,7 +14,6 @@ import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 import org.stathissideris.ascii2image.core.ConversionOptions;
-import org.stathissideris.ascii2image.core.ProcessingOptions;
 import org.stathissideris.ascii2image.graphics.BitmapRenderer;
 import org.stathissideris.ascii2image.graphics.Diagram;
 import org.stathissideris.ascii2image.text.TextGrid;
@@ -48,8 +47,7 @@ public class DiTAA extends DefaultStep {
 
     private ReadablePipe source = null;
     private WritablePipe result = null;
-    private ConversionOptions convOptions = null;
-    private ProcessingOptions procOptions = null;
+    private ConversionOptions options = null;
 
     /**
      * Creates a new instance of Identity
@@ -78,8 +76,7 @@ public class DiTAA extends DefaultStep {
         boolean html = false;
 
         try {
-            convOptions = new ConversionOptions();
-            procOptions = new ProcessingOptions();
+            options = new ConversionOptions();
 
             boolean shadows = getOption(_shadows, true);
             boolean antialias = getOption(_antialias, true);
@@ -90,19 +87,19 @@ public class DiTAA extends DefaultStep {
             String scaleStr = getOption(_scale, (String) null);
             if (scaleStr != null) {
                 float scale = Float.parseFloat(scaleStr);
-                convOptions.renderingOptions.setScale(scale);
+                options.renderingOptions.setScale(scale);
             }
 
-            procOptions.setCharacterEncoding("utf-8");
-            convOptions.renderingOptions.setDropShadows(shadows);
-            procOptions.setAllCornersAreRound(roundedCorners);
-            procOptions.setPerformSeparationOfCommonEdges(separation);
-            convOptions.renderingOptions.setAntialias(antialias);
+            options.processingOptions.setCharacterEncoding("utf-8");
+            options.renderingOptions.setDropShadows(shadows);
+            options.processingOptions.setAllCornersAreRound(roundedCorners);
+            options.processingOptions.setPerformSeparationOfCommonEdges(separation);
+            options.renderingOptions.setAntialias(antialias);
 
 
             TextGrid grid = new TextGrid();
-            if(procOptions.getCustomShapes() != null){
-                grid.addToMarkupTags(procOptions.getCustomShapes().keySet());
+            if(options.processingOptions.getCustomShapes() != null){
+                grid.addToMarkupTags(options.processingOptions.getCustomShapes().keySet());
             }
 
             XdmNode doc = source.read();
@@ -113,9 +110,9 @@ public class DiTAA extends DefaultStep {
             for (int i = 0; i  < linesArray.length; i++) {
                 lines.add(new StringBuffer(linesArray[i]));
             }
-            grid.initialiseWithLines(lines, procOptions);
-            Diagram diagram = new Diagram(grid, convOptions, procOptions);
-            RenderedImage image = new BitmapRenderer().renderToImage(diagram, convOptions.renderingOptions);
+            grid.initialiseWithLines(lines, options.processingOptions);
+            Diagram diagram = new Diagram(grid, options);
+            RenderedImage image = new BitmapRenderer().renderToImage(diagram, options.renderingOptions);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image, "png", baos);
