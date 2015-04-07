@@ -50,9 +50,6 @@ task copyLib(type: Copy) {
     File file -> path += " lib/" + file.name
   }
   project.ext.runtimeClasspath = path.trim()
-
-  from lib
-  into { "build/dist/lib" }
 }
 
 task copyCatalog(type: Copy) {
@@ -105,8 +102,6 @@ gradle.taskGraph.whenReady { taskGraph ->
 task copyStuff(type: Copy) {
   from 'README.md'
   from 'LICENSE.md'
-  from 'resources/catalog.xml'
-  from 'resources/library.xpl'
   into 'build/dist'
 }
 
