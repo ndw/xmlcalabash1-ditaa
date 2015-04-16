@@ -185,7 +185,7 @@ uploadArchives {
       pom.project {
         name 'XML Calabash DiTAA Step'
         packaging 'jar'
-        description 'XML Calabash extension step for DiTAA diagrams"
+        description 'XML Calabash extension step for DiTAA diagrams'
         url 'https://github.com/ndw/xmlcalabash1-ditaa'
 
         scm {
