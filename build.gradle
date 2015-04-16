@@ -183,9 +183,9 @@ uploadArchives {
       }
 
       pom.project {
-        name 'XML Calabash MarkLogic DiTAA Step'
+        name 'XML Calabash DiTAA Step'
         packaging 'jar'
-        description 'XML Calabash extension steps to communicate with MarkLogic server'
+        description 'XML Calabash extension step for DiTAA diagrams"
         url 'https://github.com/ndw/xmlcalabash1-ditaa'
 
         scm {
