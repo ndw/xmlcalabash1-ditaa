@@ -5,7 +5,7 @@
                 exclude-inline-prefixes="c cx">
 <p:output port="result"/>
 
-<p:import href="../../../resources/library.xpl"/>
+<p:import href="http://xmlcalabash.com/extension/steps/ditaa.xpl"/>
 
 <cx:ditaa>
   <p:input port="source">

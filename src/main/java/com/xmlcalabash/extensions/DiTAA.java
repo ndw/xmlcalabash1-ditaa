@@ -10,17 +10,29 @@ import com.xmlcalabash.library.DefaultStep;
 import com.xmlcalabash.runtime.XAtomicStep;
 import com.xmlcalabash.util.Base64;
 import com.xmlcalabash.util.TreeWriter;
+import com.xmlcalabash.util.XProcURIResolver;
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.stathissideris.ascii2image.core.ConversionOptions;
 import org.stathissideris.ascii2image.graphics.BitmapRenderer;
 import org.stathissideris.ascii2image.graphics.Diagram;
 import org.stathissideris.ascii2image.text.TextGrid;
+import org.xml.sax.InputSource;
 
 import javax.imageio.ImageIO;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.sax.SAXSource;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -44,6 +56,7 @@ public class DiTAA extends DefaultStep {
     private static final QName _html = new QName("", "html");
     private static final QName h_img = new QName("", "http://www.w3.org/1999/xhtml", "img");
     private static final QName _src = new QName("", "src");
+    private static final String library_xpl = "http://xmlcalabash.com/extension/steps/ditaa.xpl";
 
     private ReadablePipe source = null;
     private WritablePipe result = null;
@@ -138,6 +151,48 @@ public class DiTAA extends DefaultStep {
 
         tree.endDocument();
         result.write(tree.getResult());
+    }
 
+    public static void configureStep(XProcRuntime runtime) {
+        XProcURIResolver resolver = runtime.getResolver();
+        URIResolver uriResolver = resolver.getUnderlyingURIResolver();
+        URIResolver myResolver = new StepResolver(uriResolver);
+        resolver.setUnderlyingURIResolver(myResolver);
+    }
+
+    private static class StepResolver implements URIResolver {
+        Logger logger = LoggerFactory.getLogger(DiTAA.class);
+        URIResolver nextResolver = null;
+
+        public StepResolver(URIResolver next) {
+            nextResolver = next;
+        }
+
+        @Override
+        public Source resolve(String href, String base) throws TransformerException {
+            try {
+                URI baseURI = new URI(base);
+                URI xpl = baseURI.resolve(href);
+                if (library_xpl.equals(xpl.toASCIIString())) {
+                    URL url = DiTAA.class.getResource("/library.xpl");
+                    logger.debug("Reading library.xpl for cx:ditaa from " + url);
+                    InputStream s = DiTAA.class.getResourceAsStream("/library.xpl");
+                    if (s != null) {
+                        SAXSource source = new SAXSource(new InputSource(s));
+                        return source;
+                    } else {
+                        logger.info("Failed to read library.xpl for cx:ditaa");
+                    }
+                }
+            } catch (URISyntaxException e) {
+                // nevermind
+            }
+
+            if (nextResolver != null) {
+                return nextResolver.resolve(href, base);
+            } else {
+                return null;
+            }
+        }
     }
 }

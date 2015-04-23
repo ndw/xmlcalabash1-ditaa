@@ -1,4 +1,0 @@
-<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-  <uri name="http://xmlcalabash.com/extension/steps/ditaa.xpl"
-       uri="jar:file:lib/xmlcalabash1-ditaa-VERSION.jar!/library.xpl"/>
-</catalog>
