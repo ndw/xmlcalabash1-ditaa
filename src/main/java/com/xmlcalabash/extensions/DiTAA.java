@@ -57,6 +57,7 @@ public class DiTAA extends DefaultStep {
     private static final QName h_img = new QName("", "http://www.w3.org/1999/xhtml", "img");
     private static final QName _src = new QName("", "src");
     private static final String library_xpl = "http://xmlcalabash.com/extension/steps/ditaa.xpl";
+    private static final String library_uri = "/com/xmlcalabash/extensions/ditaa/library.xpl";
 
     private ReadablePipe source = null;
     private WritablePipe result = null;
@@ -174,14 +175,14 @@ public class DiTAA extends DefaultStep {
                 URI baseURI = new URI(base);
                 URI xpl = baseURI.resolve(href);
                 if (library_xpl.equals(xpl.toASCIIString())) {
-                    URL url = DiTAA.class.getResource("/library.xpl");
+                    URL url = DiTAA.class.getResource(library_uri);
                     logger.debug("Reading library.xpl for cx:ditaa from " + url);
-                    InputStream s = DiTAA.class.getResourceAsStream("/library.xpl");
+                    InputStream s = DiTAA.class.getResourceAsStream(library_uri);
                     if (s != null) {
                         SAXSource source = new SAXSource(new InputSource(s));
                         return source;
                     } else {
-                        logger.info("Failed to read library.xpl for cx:ditaa");
+                        logger.info("Failed to read " + library_uri + " for cx:ditaa");
                     }
                 }
             } catch (URISyntaxException e) {
