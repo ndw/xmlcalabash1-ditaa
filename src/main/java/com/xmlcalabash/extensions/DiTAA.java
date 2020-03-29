@@ -65,6 +65,8 @@ public class DiTAA extends DefaultStep {
 
     /**
      * Creates a new instance of Identity
+     * @param runtime The XProc runtime
+     * @param step The atomic step
      */
     public DiTAA(XProcRuntime runtime, XAtomicStep step) {
         super(runtime, step);
